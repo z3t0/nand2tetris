@@ -1,0 +1,32 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Or.hdl
+
+/**
+* Or gate:
+* out = 1 if (a == 1 or b == 1)
+*       0 otherwise
+*/
+
+CHIP Or {
+	IN a, b;
+	OUT out;
+
+	PARTS:
+	// This is XOR and 0 0 => 1
+	Nand(a=a, b=b, out=out1);
+
+	// Make sure it is not 0 0
+	Not(in=a, out=outa);
+	Not(in=b, out=outb);
+	And(a=outa, b=outb, out=out2); // 1 if both are zero
+	Not(in=out2, out=out3);
+
+	// If it is 1 1 then Not(out1)
+	And(a=a, b=b, out=out4);
+	Nand(a=out1, b=out4, out=out5);
+
+	// Now merge the two truths
+	And(a=out3, b=out5, out=out);
+}
